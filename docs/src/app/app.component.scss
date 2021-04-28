@@ -1,0 +1,30 @@
+.logo {
+  width: 31px;
+  height: 31px;
+  background: rgba(255, 255, 255, 0.2);
+  margin: 16px 24px 16px 0;
+  float: left;
+}
+
+[nz-menu] {
+  line-height: 64px;
+}
+
+.ant-layout {
+  min-height: 100%;
+}
+
+nz-breadcrumb {
+  margin: 16px 0;
+}
+
+nz-content {
+  padding: 2em;
+  @media screen and (max-width: 650px) {
+    padding: 0;
+  }
+}
+
+nz-footer {
+  text-align: center;
+}

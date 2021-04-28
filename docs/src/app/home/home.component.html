@@ -1,0 +1,101 @@
+<div class="inner-content">
+  <div nz-row>
+    <div nz-col [nzLg]="{ span: 12, offset: 6 }" [nzXs]="{ span: 24, offset: 0 }">
+    <form nz-form="">
+      <nz-form-item>
+        <nz-form-control>
+          <nz-select nzSize="large" nzShowSearch nzServerSearch nzAllowClear
+            nzPlaceHolder="Search location..." name="locationQuery"
+            [(ngModel)]="location" (nzOnSearch)="loadLocation($event)" (ngModelChange)="chooseLocation()">
+            <nz-option *ngFor="let o of locationOptions" [nzLabel]="o.LocalizedName" [nzValue]="o"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+
+    </div>
+  </div>
+
+  <nz-card *ngIf="forecast&&location" [nzTitle]="locationTPL" [nzExtra]="favoriteTPL">
+    <h5 class="text-center">Forecast date: {{ forecast.Date | date:'fullDate' }}</h5>
+    <nz-collapse>
+      <nz-collapse-panel [nzHeader]="'Temperature'" [nzActive]="true">
+        <div style="margin:0;">
+          <div nz-row>
+            <div nz-col nzXs="24" nzSm="24" nzMd="8" nzLg="8">
+              <nz-descriptions nzTitle="Temperature" nzLayout="vertical">
+                <nz-descriptions-item nzTitle="Minimum">{{ forecast.Temperature.Minimum.Value }}&#8451;</nz-descriptions-item>
+                <nz-descriptions-item nzTitle="Maximum">{{ forecast.Temperature.Maximum.Value }}&#8451;</nz-descriptions-item>
+              </nz-descriptions>
+            </div>
+            <div nz-col nzXs="24" nzSm="24" nzMd="8" nzLg="8">
+              <nz-descriptions nzTitle="Real Feel Temperature" nzLayout="vertical">
+                <nz-descriptions-item nzTitle="Minimum">{{ forecast.RealFeelTemperature.Minimum.Value }}&#8451;</nz-descriptions-item>
+                <nz-descriptions-item nzTitle="Maximum">{{ forecast.RealFeelTemperature.Maximum.Value }}&#8451;</nz-descriptions-item>
+              </nz-descriptions>
+            </div>
+            <div nz-col nzXs="24" nzSm="24" nzMd="8" nzLg="8">
+              <nz-descriptions nzTitle="Real Feel Temperature In The Shade" nzLayout="vertical">
+                <nz-descriptions-item nzTitle="Minimum">{{ forecast.RealFeelTemperatureShade.Minimum.Value }}&#8451;</nz-descriptions-item>
+                <nz-descriptions-item nzTitle="Maximum">{{ forecast.RealFeelTemperatureShade.Maximum.Value }}&#8451;</nz-descriptions-item>
+              </nz-descriptions>
+            </div>
+          </div>
+        </div>
+      </nz-collapse-panel>
+      <nz-collapse-panel [nzHeader]="'Day Details'" [nzActive]="false">
+        <div style="margin:0;">
+          <h5 nz-typography class="text-center">Day: {{ forecast.Day.ShortPhrase }}</h5>
+          <p nz-typography nzType="secondary" class="text-center">{{ forecast.Day.LongPhrase }}</p>
+          <h5 nz-typography class="text-center">Night: {{ forecast.Day.ShortPhrase }}</h5>
+          <p nz-typography nzType="secondary" class="text-center">{{ forecast.Night.LongPhrase }}</p>
+          <div nz-row>
+            <div nz-col nzSpan="12">
+              <nz-descriptions nzTitle="Sun" nzLayout="vertical">
+                <nz-descriptions-item nzTitle="Rise">{{ forecast.Sun.Rise | date: 'shortTime' }}</nz-descriptions-item>
+                <nz-descriptions-item nzTitle="Set">{{ forecast.Sun.Set | date: 'shortTime' }}</nz-descriptions-item>
+              </nz-descriptions>
+            </div>
+            <div nz-col nzSpan="12">
+              <nz-descriptions nzTitle="Moon" nzLayout="vertical">
+                <nz-descriptions-item nzTitle="Rise">{{ forecast.Sun.Rise | date: 'shortTime' }}</nz-descriptions-item>
+                <nz-descriptions-item nzTitle="Set">{{ forecast.Sun.Set | date: 'shortTime' }}</nz-descriptions-item>
+              </nz-descriptions>
+            </div>
+          </div>
+        </div>
+      </nz-collapse-panel>
+      <nz-collapse-panel *ngIf="daysForecasts" [nzHeader]="'5 Days Details'" [nzActive]="true">
+        <nz-list nzGrid>
+          <div nz-row [nzGutter]="16">
+            <div *ngFor="let day of daysForecasts"  nz-col [nzXXl]="8" [nzXl]="4" [nzLg]="6" [nzMd]="6" [nzSm]="12" [nzXs]="24">
+              <nz-list-item>
+                <nz-card class="day-forecast" nzTitle="{{ day.Date | date:'EEE, MMM d, y' }}">
+                  <div>
+                    <h5 nz-typography class="text-center">{{ day.Day.ShortPhrase }}.</h5>
+                    <p class="text-center">{{ day.Temperature.Minimum.Value }}&#8451; - {{ day.Temperature.Maximum.Value }}&#8451;</p>
+                  </div>
+                </nz-card>
+              </nz-list-item>
+            </div>
+          </div>
+        </nz-list>
+      </nz-collapse-panel>
+
+    </nz-collapse>
+  </nz-card>
+  <ng-template #locationTPL>
+    <h4 nz-typography>{{ location.LocalizedName }}</h4>
+    <h6 nz-typography>{{ location.Country.LocalizedName }}</h6>
+  </ng-template>
+  <ng-template #favoriteTPL>
+    <button class="favoriteBtn" nz-button [nzType]="isInFavorite ? 'primary' : 'default'" nzShape="circle" (click)="setFavorite()">
+      <i nz-icon>
+        <svg>
+          <path d="M923 283.6c-13.4-31.1-32.6-58.9-56.9-82.8-24.3-23.8-52.5-42.4-84-55.5-32.5-13.5-66.9-20.3-102.4-20.3-49.3 0-97.4 13.5-139.2 39-10 6.1-19.5 12.8-28.5 20.1-9-7.3-18.5-14-28.5-20.1-41.8-25.5-89.9-39-139.2-39-35.5 0-69.9 6.8-102.4 20.3-31.4 13-59.7 31.7-84 55.5-24.4 23.9-43.5 51.7-56.9 82.8-13.9 32.3-21 66.6-21 101.9 0 33.3 6.8 68 20.3 103.3 11.3 29.5 27.5 60.1 48.2 91 32.8 48.9 77.9 99.9 133.9 151.6 92.8 85.7 184.7 144.9 188.6 147.3l23.7 15.2c10.5 6.7 24 6.7 34.5 0l23.7-15.2c3.9-2.5 95.7-61.6 188.6-147.3 56-51.7 101.1-102.7 133.9-151.6 20.7-30.9 37-61.5 48.2-91 13.5-35.3 20.3-70 20.3-103.3 0.1-35.3-7-69.6-20.9-101.9z"/>
+        </svg>
+      </i>
+    </button>
+  </ng-template>
+</div>
+

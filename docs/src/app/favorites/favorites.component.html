@@ -1,0 +1,32 @@
+<div class="inner-content">
+
+  <nz-card [nzTitle]="titleTPL">
+      <nz-list nzGrid>
+        <div nz-row [nzGutter]="16">
+          <div *ngFor="let item of favoriteList | keyvalue"  nz-col [nzXXl]="8" [nzXl]="4" [nzLg]="6" [nzMd]="6" [nzSm]="12" [nzXs]="24">
+            <nz-list-item>
+              <nz-card class="day-forecast" [nzTitle]="locationTitleTPL" [nzExtra]="removeTPL">
+                <ng-template #locationTitleTPL>
+                  <h5 nz-typography>{{ item.value.location.LocalizedName }}</h5>
+                  <h6 nz-typography nzType="secondary">{{ item.value.location.Country.LocalizedName }}</h6>
+                </ng-template>
+                <ng-template #removeTPL>
+                  <button class="removeBtn" nz-button nzType="default" nzShape="circle" nzDanger (click)="remove(item.value.location.Key)">
+                    <i nz-icon nzType="close" nzTheme="outline"></i>
+                  </button>
+                </ng-template>
+                <div>
+                  <h5 nz-typography class="text-center">{{ item.value.forecast.Day.ShortPhrase }}.</h5>
+                  <p class="text-center">{{ item.value.forecast.Temperature.Minimum.Value }}&#8451; - {{ item.value.forecast.Temperature.Maximum.Value }}&#8451;</p>
+                </div>
+              </nz-card>
+            </nz-list-item>
+          </div>
+        </div>
+      </nz-list>
+  </nz-card>
+  <ng-template #titleTPL>
+    <h4 class="text-center" nz-typography>Favorite Location Forecasts</h4>
+  </ng-template>
+
+</div>
